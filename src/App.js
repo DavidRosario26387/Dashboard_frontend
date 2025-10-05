@@ -37,13 +37,15 @@ function App() {
   const stressedCount = logs.filter((l) => l.Stress_label === 'Stressed').length;
   const notStressedCount = totalMessages - stressedCount;
 
-  const severityCounts = [
-    logs.filter((l) => l.Stress_category === 'Low').length,
-    logs.filter((l) => l.Stress_category === 'Medium').length,
-    logs.filter((l) => l.Stress_category === 'High').length,
-  ];
+  // Stress reason frequency
+  const reasonFrequency = {};
+  logs.forEach((l) => {
+    if (l.Stress_Reason) {
+      reasonFrequency[l.Stress_Reason] = (reasonFrequency[l.Stress_Reason] || 0) + 1;
+    }
+  });
 
-  // Bubble chart data (keyword frequency)
+  // Bubble chart data (keywords)
   const keywordFrequency = {};
   logs.forEach((l) => {
     if (l.Stress_Reason) {
@@ -60,44 +62,57 @@ function App() {
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '900px', margin: '0 auto' }}>
+    <div style={{ padding: '20px', maxWidth: '1000px', margin: '0 auto' }}>
       <h1>Total messages analyzed: {totalMessages}</h1>
 
-      <div style={{ margin: '40px 0' }}>
-        <h2># of stressed vs non-stressed messages</h2>
-        <Doughnut
-          data={{
-            labels: ['Stressed', 'Not Stressed'],
-            datasets: [
-              {
-                data: [stressedCount, notStressedCount],
-                backgroundColor: ['#FF6384', '#36A2EB'],
-              },
-            ],
-          }}
-        />
+      {/* Flex container for Donut + Horizontal Bar */}
+      <div style={{ display: 'flex', gap: '40px', margin: '40px 0', flexWrap: 'wrap' }}>
+        {/* Donut chart */}
+        <div style={{ flex: 1, minWidth: '300px' }}>
+          <h2># of stressed vs non-stressed messages</h2>
+          <Doughnut
+            data={{
+              labels: ['Stressed', 'Not Stressed'],
+              datasets: [
+                {
+                  data: [stressedCount, notStressedCount],
+                  backgroundColor: ['#FF6384', '#36A2EB'],
+                },
+              ],
+            }}
+          />
+        </div>
+
+        {/* Horizontal bar chart for stress reasons */}
+        <div style={{ flex: 1, minWidth: '300px' }}>
+          <h2>Stress reasons contribution</h2>
+          <Bar
+            data={{
+              labels: Object.keys(reasonFrequency),
+              datasets: [
+                {
+                  label: 'Number of Messages',
+                  data: Object.values(reasonFrequency),
+                  backgroundColor: '#FFCE56',
+                },
+              ],
+            }}
+            options={{
+              indexAxis: 'y', // horizontal
+              responsive: true,
+              plugins: { legend: { display: false } },
+            }}
+          />
+        </div>
       </div>
 
-      <div style={{ margin: '40px 0' }}>
-        <h2>Stress severity distribution</h2>
-        <Bar
-          data={{
-            labels: ['Low', 'Moderate', 'High'],
-            datasets: [
-              {
-                label: 'Number of Messages',
-                data: severityCounts,
-                backgroundColor: ['#36A2EB', '#FFCE56', '#FF6384'],
-              },
-            ],
-          }}
-          options={{ responsive: true, plugins: { legend: { display: false } } }}
-        />
-      </div>
-
+      {/* Bubble chart */}
       <div style={{ margin: '40px 0' }}>
         <h2>Trending stress topics</h2>
-        <Bubble data={bubbleData} options={{ responsive: true, plugins: { legend: { display: true } } }} />
+        <Bubble
+          data={bubbleData}
+          options={{ responsive: true, plugins: { legend: { display: true } } }}
+        />
       </div>
     </div>
   );
