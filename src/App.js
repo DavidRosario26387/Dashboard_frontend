@@ -8,7 +8,7 @@ function App() {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    axios.get('https://dashboard-backend-elzh.onrender.com')
+    axios.get('https://dashboard-backend-elzh.onrender.com/api/logs')
       .then(res => setLogs(res.data))
       .catch(err => console.error(err));
   }, []);
