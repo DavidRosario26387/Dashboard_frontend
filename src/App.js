@@ -41,7 +41,7 @@ function App() {
   // Severity counts
   const severityCounts = [
     stressedMessages.filter((l) => l.Stress_category === 'Low').length,
-    stressedMessages.filter((l) => l.Stress_category === 'Moderate').length,
+    stressedMessages.filter((l) => l.Stress_category === 'Medium').length,
     stressedMessages.filter((l) => l.Stress_category === 'High').length,
   ];
 
