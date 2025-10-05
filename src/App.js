@@ -39,7 +39,7 @@ function App() {
 
   const severityCounts = [
     logs.filter((l) => l.Stress_category === 'Low').length,
-    logs.filter((l) => l.Stress_category === 'Moderate').length,
+    logs.filter((l) => l.Stress_category === 'Medium').length,
     logs.filter((l) => l.Stress_category === 'High').length,
   ];
 
